@@ -3,5 +3,33 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AlexandrUrsu_ApiMaps.MainPage">
-
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="#E5E3CE">
+            <Frame BackgroundColor="#426E66" Padding="50" CornerRadius="0">
+            <Label Text="Welcome to your travel assistant!"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" 
+                FontSize="36"
+                HorizontalTextAlignment="Center"
+                   TextColor="#E5E3CE"/>
+            </Frame>
+            
+            <Label Text="Let's find some places!"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" 
+                FontSize="Subtitle"
+                   TextColor="#233A48"/>
+            <Button Text="Open Map"
+                        Clicked="OnApiButtonClicked" 
+                    BackgroundColor="#6C9585"
+                    />
+            <Button Text="New places nearby"
+                        Clicked="OnNewPlacesButtonClicked" 
+                    BackgroundColor="#6C9585"
+                    />
+            <Button Text="My Favorite Places" Clicked="OnFavoriteClicked"
+                    BackgroundColor="#6C9585"
+                    />
+        </StackLayout>
+    </ContentPage.Content>
 </ContentPage>

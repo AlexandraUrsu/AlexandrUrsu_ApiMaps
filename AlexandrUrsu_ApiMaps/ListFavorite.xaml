@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AlexandrUrsu_ApiMaps.ListFavorite">
+    <ContentPage.Content>
+        <ListView x:Name="list_favorite" HasUnevenRows="True" ItemSelected="ListFavorite_ItemSelected" BackgroundColor="#E5E3CE">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Margin="2,2,2,2">
+                            <Label Text="{Binding Name}" FontAttributes="Bold" />
+                            <Label Text="{Binding Adress}"/>
+                            <Label Text="{Binding Website}"/>
+                            <Label Text="{Binding Phone}"/>
+                        </StackLayout>
+                    </ViewCell>
+                    
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </ContentPage.Content>
+</ContentPage>

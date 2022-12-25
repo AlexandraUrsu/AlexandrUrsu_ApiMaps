@@ -15,6 +15,10 @@ using Plugin.Permissions.Abstractions;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
+using Android.Locations;
+using Location = Xamarin.Essentials.Location;
+using Geocoder = Xamarin.Forms.GoogleMaps.Geocoder;
+using System.Net;
 
 namespace AlexandrUrsu_ApiMaps
 {
@@ -22,10 +26,13 @@ namespace AlexandrUrsu_ApiMaps
     public partial class MapsApi : ContentPage
     {
 
-        public MapsApi()
+        public MapsApi(double lat, double lng)
         {
+            
             InitializeComponent();
-            map.MoveToRegion(new MapSpan(new Position(46.770439, 23.591423), 0, 0));
+             
+
+            map.MoveToRegion(new MapSpan(new Position(lat,lng ), 0, 0));
            
         }
 

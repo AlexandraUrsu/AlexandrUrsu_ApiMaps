@@ -9,23 +9,29 @@
             
             <maps:Map x:Name="map" ></maps:Map>
 
-            <Grid>
+            <Grid BackgroundColor="#E5E3CE">
                 <Button Grid.Column="0" 
+                        BackgroundColor="#6C9585"
                         Text="Street"
                         Clicked="OnStreetClicked" />
                 <Button Grid.Column="1" 
+                        BackgroundColor="#6C9585"
                         Text="Terrain"
                         Clicked="OnTerrainClicked" />
                 <Button Grid.Column="2"
+                        BackgroundColor="#6C9585"
                         Text="Hybrid"
                         Clicked="OnHybridClicked" />
                 <Button Grid.Column="3"
+                        BackgroundColor="#6C9585"
                         Text="Satellite"
                         Clicked="OnSatelliteClicked" />
                 <Button  Grid.Row="1" Grid.ColumnSpan="2"
+                         BackgroundColor="#6C9585"
                         Text="Localize me"
                         Clicked="OnLocalizeClicked" />
                 <Button  Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="2"
+                         BackgroundColor="#6C9585"
                         Text="Search Nearby"
                         Clicked="OnSearchClicked" />
             </Grid>

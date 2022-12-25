@@ -3,29 +3,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AlexandrUrsu_ApiMaps.PlaceApi">
 
-    <StackLayout VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand">
+    <StackLayout VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" BackgroundColor="#E5E3CE">
         <StackLayout Margin="0,10,0,0">
             <StackLayout Orientation="Horizontal">
                 <Picker x:Name="picker" HorizontalOptions="CenterAndExpand" Title="Select a type to search" SelectedIndexChanged="PickerType_OnSelectedIndexChanged"/>
-                <Button Text="Search" x:Name="ButtonSearch" Clicked="ButtonSearch_OnClicked" HorizontalOptions="CenterAndExpand"/>
+                <Button Text="Search" x:Name="ButtonSearch" Clicked="ButtonSearch_OnClicked" HorizontalOptions="CenterAndExpand" BackgroundColor="#6C9585"/>
             </StackLayout>
             <ActivityIndicator x:Name="ActivityIndicatorStatus" WidthRequest="100" HeightRequest="100" IsRunning="True" IsVisible="False" IsEnabled="True"/>
         </StackLayout>
         <BoxView>
             
         </BoxView>
-        <Label x:Name="ale" ></Label>
+        <!--<Label x:Name="ale" ></Label>-->
         <ListView x:Name="ListViewResult" HasUnevenRows="True" ItemSelected="ListViewResult_OnItemSelected">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <ViewCell>
-                        <StackLayout Margin="2,2,2,2">
-                            <Label Text="Name"/>
+                    <ViewCell Height="2">
+                        <StackLayout Margin="2,2,2,2" >
                             <Label Text="{Binding name}" FontAttributes="Bold" TextColor="Green"/>
                         </StackLayout>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <Button Text="Show Favorites" Clicked="ShowFavoritesCkicked" BackgroundColor="#6C9585"/>
     </StackLayout>
 </ContentPage>

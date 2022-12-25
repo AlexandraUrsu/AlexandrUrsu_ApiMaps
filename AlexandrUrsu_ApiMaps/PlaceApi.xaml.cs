@@ -1,17 +1,37 @@
-﻿using AlexandrUrsu_ApiMaps.Models;
+﻿using AlexandrUrsu_ApiMaps.Data;
+using AlexandrUrsu_ApiMaps.Models;
 using AlexandrUrsu_ApiMaps.RestClient;
+using Android.App;
+using Android.Database.Sqlite;
+using Android.Locations;
+using Android.Renderscripts;
+using Java.Nio.FileNio.Attributes;
+using Java.Util;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
+using Xamarin.Forms.Maps;
 using Xamarin.Forms.Xaml;
+using static AlexandrUrsu_ApiMaps.Models.Detail;
 using static AlexandrUrsu_ApiMaps.Models.Place;
+using static Android.InputMethodServices.Keyboard;
+using static Android.OS.Build;
+using Geocoder = Xamarin.Forms.GoogleMaps.Geocoder;
+using Pin = Xamarin.Forms.GoogleMaps.Pin;
+using PinType = Xamarin.Forms.GoogleMaps.PinType;
+using Position = Xamarin.Forms.GoogleMaps.Position;
 
 namespace AlexandrUrsu_ApiMaps
 {
@@ -22,6 +42,10 @@ namespace AlexandrUrsu_ApiMaps
 
         private readonly string nearbyQuery =
             "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={0}%2C{1}&radius={2}&type={3}&keyword={4}&key=" +
+            PlaceAPIkey;
+
+        private readonly string detailsQuery =
+            "https://maps.googleapis.com/maps/api/place/details/json?placeid={0}&fields=name,website,formatted_address,formatted_phone_number&key=" +
             PlaceAPIkey;
 
         public string radius = "1500";
@@ -73,7 +97,7 @@ namespace AlexandrUrsu_ApiMaps
             {
                 var restClient = new RestClient<Place.RootObject>();
                 var result = await restClient.GetAsync(requestUri);
-                ale.Text = requestUri;
+                //ale.Text = requestUri;
                 return result;
                 
             }
@@ -182,10 +206,99 @@ namespace AlexandrUrsu_ApiMaps
             picker.SelectedItem = "company";
             picker.Title = "company";
         }
-        private void ListViewResult_OnItemSelected(object sender, EventArgs e)
-        {
 
+        public async Task<Detail.RootObject>PlaceDetailsSearch(string detailsQuery, string placeID, string nextPageToken)
+        {
+            var pagetoken = nextPageToken != null ? "&pagetoken=" + nextPageToken : null;
+            var requestUri = string.Format(detailsQuery, placeID);
+            try
+            {
+                var restClient = new RestClient<Detail.RootObject>();
+                var result = await restClient.GetAsync(requestUri);
+                return result;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Near by place search error: " + e.Message);
+            }
+            return null;
+        }
+        private async void ListViewResult_OnItemSelected(object sender, EventArgs e)
+        {
+            ActivityIndicatorStatus.IsVisible = true;
+            try
+            {
+                var selectedPlace = ListViewResult.SelectedItem as Place.Result;
+                var result = await PlaceDetailsSearch(detailsQuery, selectedPlace.place_id, "");
+
+                if (result.result == null)
+                {
+                    await DisplayAlert("Search", "Result return: " + result.status, "Try again later");
+                    ActivityIndicatorStatus.IsVisible = false;
+                    return;
+                }
+
+                var content = "Address: " + result.result.formatted_address + "\nPhone: " + result.result.formatted_phone_number + "\nWebsite: " + result.result.website;
+
+
+                ActivityIndicatorStatus.IsVisible = false;
+               // await DisplayAlert(selectedPlace.name, content, "OK");
+                var actionSheet = await DisplayActionSheet(selectedPlace.name, "Cancel", "Favorite", "Open Location", "Website", "Call");
+
+                switch (actionSheet)
+                {
+                    case "Cancel":
+
+                        break;
+                    case "Favorite":
+                        Favorite fav = new Favorite()
+                        {
+                            Name = selectedPlace.name,
+                            Adress = result.result.formatted_address,
+                            Website = result.result.website,
+                            Phone = result.result.formatted_phone_number
+                        };
+                        await App.Database.SaveFavoritePlaceAsync(fav);
+                        await DisplayAlert(fav.Name, "Added to favorite", "ok");
+                        break;
+
+
+                    case "Open Location":
+                        Geocoder geoCoder = new Geocoder();
+                        IEnumerable<Position> approximateLocations = await geoCoder.GetPositionsForAddressAsync(result.result.formatted_address);
+                        Position position = approximateLocations.FirstOrDefault();
+                        
+                        await Navigation.PushModalAsync(new MapsApi(position.Latitude, position.Longitude));
+                       
+                        break;
+
+
+                    case "Website":
+
+                       await Navigation.PushModalAsync(new WebPage(result.result.website));
+
+                        break;
+
+                    case "Call":
+
+                        await Launcher.OpenAsync("tel:"+result.result.formatted_phone_number);
+
+                        break;
+
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+            ActivityIndicatorStatus.IsVisible = false;
         }
 
+        private void ShowFavoritesCkicked(object sender, EventArgs e)
+        {
+            Navigation.PushModalAsync(new ListFavorite());
+        }
     }
+
+    
 }

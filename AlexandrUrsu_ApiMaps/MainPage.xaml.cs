@@ -15,5 +15,19 @@ namespace AlexandrUrsu_ApiMaps
             InitializeComponent();
   
         }
+
+        private void OnApiButtonClicked(object sender, EventArgs e)
+        {
+            Navigation.PushModalAsync(new MapsApi(46.770439, 23.591423));
+        }
+        private void OnFavoriteClicked(object sender, EventArgs e)
+        {
+            Navigation.PushModalAsync(new ListFavorite());
+        }
+
+        private void OnNewPlacesButtonClicked(object sender, EventArgs e)
+        {
+            Navigation.PushModalAsync(new PlaceApi());
+        }
     }
 }
